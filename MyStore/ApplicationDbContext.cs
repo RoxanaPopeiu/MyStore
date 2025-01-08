@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyStore.Models;
 
-namespace MyStore.Models
+namespace MyStore
 {
     public class ApplicationDbContext : DbContext
     {
-        protected ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -18,11 +19,11 @@ namespace MyStore.Models
         public DbSet<ProductSize> ProductSizes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+
 
             // Configurarea relației Many-to-Many între Product și Size prin ProductSize
             modelBuilder.Entity<ProductSize>()
-                .HasKey(ps =>ps.Id ); 
+                .HasKey(ps => ps.Id);
 
             modelBuilder.Entity<ProductSize>()
                 .HasOne(ps => ps.Product)
@@ -62,6 +63,7 @@ namespace MyStore.Models
                         .HasKey(nameof(BaseEntity.Id));
                 }
             }
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
