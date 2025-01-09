@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using MyStore;
+using MyStore.Services;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+builder.Services.AddScoped<UserService>();
 
 // Add services to the container.
 
@@ -20,7 +22,6 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

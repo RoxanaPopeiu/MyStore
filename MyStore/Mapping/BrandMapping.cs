@@ -21,6 +21,15 @@ namespace MyStore.Mapping
         {
             return brands.Select(brand => brand.ToBrandDto()).ToList();
         }
+        public static Brand ToBrand(this BrandDto brandDto)
+        {
+            return new Brand
+            {
+                Name = brandDto.Name,
+                Description = brandDto.Description,
+                Categories = brandDto.Categories?.Select(c => c.ToCategory()).ToList() ?? new List<Category>()
+            };
+        }
 
     }
 }

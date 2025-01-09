@@ -14,14 +14,27 @@ namespace MyStore.Mapping
                 UserName = user.UserName,
                 Email = user.Email,
                 Role = user.Role,
+                Password = user.Password,
                 Addresses = user.Addresses?.Select(address => address.ToAddressDto()).ToList() ?? new List<AddressDto>()
             };
         }
 
         // Map a list of Users to a list of UserDtos
-        public static List<UserDto> ToUserDtoList(this IEnumerable<User> users)
+        public static List<UserDto> ToUserDtoList(this List<User> users)
         {
             return users.Select(user => user.ToUserDto()).ToList();
         }
+        public static User ToUser(this UserDto userDto)
+        {
+            return new User
+            {
+                UserName = userDto.UserName,
+                Email = userDto.Email,
+                Role = userDto.Role,
+                Password = userDto.Password,
+                Addresses = userDto.Addresses?.Select(adressDto => adressDto.ToAdress()).ToList() ?? new List<Address>()
+            };
+        }
     }
 }
+

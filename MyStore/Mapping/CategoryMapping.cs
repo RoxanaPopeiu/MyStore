@@ -23,7 +23,15 @@ namespace MyStore.Mapping
         {
             return categories.Select(cat => cat.ToCategoryDto()).ToList();
         }
-
+        public static Category ToCategory(this CategoryDto categoryDto)
+        {
+            return new Category
+            {
+                Name = categoryDto.Name,
+                Description = categoryDto.Description,
+                Sizes = categoryDto.Sizes?.Select(size => size.ToSize()).ToList() ?? new List<Size>()
+            };
+        }
 
     }
 }

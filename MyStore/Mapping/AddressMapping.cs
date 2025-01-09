@@ -25,5 +25,18 @@ namespace MyStore.Mapping
         {
             return addresses.Select(address => address.ToAddressDto()).ToList();
         }
+        public static Address ToAdress(this AddressDto adressDto)
+        {
+            return new Address
+            {
+                StreetLine1 = adressDto.StreetLine1,
+                StreetLine2 = adressDto.StreetLine2,
+                City = adressDto.City,
+                County = adressDto.County,
+                Country = adressDto.Country,
+                PostalCode = adressDto.PostalCode,
+                AdditionalDetails = adressDto.AdditionalDetails
+            };
+        }
     }
 }

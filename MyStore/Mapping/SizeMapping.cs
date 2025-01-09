@@ -21,5 +21,13 @@ namespace MyStore.Mapping
         {
             return sizes.Select(size => size.ToSizeDto()).ToList();
         }
+        public static Size ToSize(this SizeDto sizeDto)
+        {
+            return new Size
+            {
+                Name = sizeDto.Name,
+                Description = sizeDto.Description
+            };
+        }
     }
 }

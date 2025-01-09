@@ -22,5 +22,14 @@ namespace MyStore.Mapping
         {
             return promotions.Select(promotion => promotion.ToPromotionDto()).ToList();
         }
+        public static Promotion ToPromotion(this PromotionDto promotionDto)
+        {
+            return new Promotion
+            {
+                Value = promotionDto.Value,
+                StartDate = promotionDto.StartDate,
+                EndDate = promotionDto.EndDate
+            };
+        }
     }
 }
