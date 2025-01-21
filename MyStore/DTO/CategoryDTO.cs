@@ -7,6 +7,7 @@ namespace MyStore.DTO
         public int? Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int BrandId {  get; set; }
         // The name of the associated Brand
         public string BrandName { get; set; }
 

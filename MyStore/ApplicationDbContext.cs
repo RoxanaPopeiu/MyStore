@@ -45,13 +45,20 @@ namespace MyStore
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.Brand)
                 .WithMany(b => b.Categories)
-                .HasForeignKey(c => c.BrandId);
+                .HasForeignKey(c => c.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configurarea relației Many-to-One între Size și Category
             modelBuilder.Entity<Size>()
                 .HasOne(s => s.Category)
                 .WithMany(c => c.Sizes)
                 .HasForeignKey(s => s.CategoryId);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Promotion)
+                .WithMany()  // A promotion applies to multiple products
+                .HasForeignKey(p => p.PromotionId);
+
 
             // Configurarea cheilor primare implicite din BaseEntity
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

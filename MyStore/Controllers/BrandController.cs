@@ -18,7 +18,7 @@ namespace MyStore.Controllers
         public IActionResult Create([FromBody] BrandDto brandDto)
         {
             var createBrand = brandService.Create(brandDto);
-            return Ok(brandDto);
+            return Ok(createBrand);
         }
         [HttpGet("ReadAllBrands")]
         public List<BrandDto> ReadAllBrands()

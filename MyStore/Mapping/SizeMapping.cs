@@ -12,7 +12,8 @@ namespace MyStore.Mapping
             {
                 Id = size.Id,
                 Name = size.Name,
-                Description = size.Description
+                Description = size.Description,
+                CategoryId=size.CategoryId
             };
         }
 
@@ -26,7 +27,8 @@ namespace MyStore.Mapping
             return new Size
             {
                 Name = sizeDto.Name,
-                Description = sizeDto.Description
+                Description = sizeDto.Description,
+                CategoryId = sizeDto.CategoryId ?? 0
             };
         }
     }

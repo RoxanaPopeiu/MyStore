@@ -12,7 +12,8 @@ namespace MyStore.DTO
         public string  CategoryName { get; set; }
         // Associated Brand
         public string BrandName { get; set; }
-        // Optional Promotion
+        // Promotion Reference
+        public int? PromotionId {  get; set; }
         public string PromotionName{ get; set; }
         // List of associated Sizes
         public ICollection<SizeDto> Sizes { get; set; } = new List<SizeDto>();

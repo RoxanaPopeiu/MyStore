@@ -9,6 +9,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BrandService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<SizeService>();
+builder.Services.AddScoped<PromotionService>();
 
 // Add services to the container.
 

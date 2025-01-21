@@ -23,8 +23,7 @@ namespace MyStore.Services
         }
         public List<BrandDto> ReadAllBrands()
         {
-            var result = BrandMapping.ToBrandDtoList(_context.Brands);
-            var t = _context.Brands;
+            var result = BrandMapping.ToBrandDtoList(_context.Brands);    
             return result;
         }
         public Brand ReadOneBrandById(int id)
@@ -33,6 +32,8 @@ namespace MyStore.Services
         }
         public BrandDto Update(int id, BrandDto brandDto)
         {
+            if (CheckBrandExistence(brandDto.Name))
+                throw new Exception("The Brand is already registered!"); //to do Custom Exceptions
             var extBrand = ReadOneBrandById(id);
             if(extBrand!=null)
             {

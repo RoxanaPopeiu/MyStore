@@ -13,7 +13,8 @@ namespace MyStore.Mapping
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
-                BrandName = category.Brand?.Name,
+                BrandName = category.Brand?.Name ?? "Unknown",
+                BrandId = category.BrandId,
                 Sizes = category.Sizes?.Select(size => size.ToSizeDto()).ToList() ?? new List<SizeDto>()
             };
         }
@@ -29,6 +30,7 @@ namespace MyStore.Mapping
             {
                 Name = categoryDto.Name,
                 Description = categoryDto.Description,
+                BrandId=categoryDto.BrandId,
                 Sizes = categoryDto.Sizes?.Select(size => size.ToSize()).ToList() ?? new List<Size>()
             };
         }
