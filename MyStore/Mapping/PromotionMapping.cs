@@ -24,6 +24,8 @@ namespace MyStore.Mapping
         }
         public static Promotion ToPromotion(this PromotionDto promotionDto)
         {
+            if (promotionDto == null) // ✅ Fix: Prevents NullReferenceException
+                return null;
             return new Promotion
             {
                 Value = promotionDto.Value,

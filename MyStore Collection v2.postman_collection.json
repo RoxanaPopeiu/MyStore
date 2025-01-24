@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "3c227731-d0fe-4d56-bbf2-1f18baec8a43",
+		"name": "MyStore Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40907323"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Id\": 1,\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"Id\": 1,\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 1\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"Id\": 2,\r\n      \"StreetLine1\": \"Strada Plopilor nr 60\",\r\n      \"StreetLine2\": \"Ap 123123213\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopilor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Create"
+							]
+						},
+						"description": "Register new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Password\": \"SecureP@ssword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:55001/user/Delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 2\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"StreetLine1\": \"Strada Plopilor nr 61\",\r\n      \"StreetLine2\": \"Ap 1231232134\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopiloor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Update/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users By role",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Id\": 1,\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"Id\": 1,\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 1\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"Id\": 2,\r\n      \"StreetLine1\": \"Strada Plopilor nr 60\",\r\n      \"StreetLine2\": \"Ap 123123213\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopilor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Create"
+							]
+						},
+						"description": "Register new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Brands",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Brand",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 2\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"StreetLine1\": \"Strada Plopilor nr 61\",\r\n      \"StreetLine2\": \"Ap 1231232134\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopiloor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Update/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:55001/user/Delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Id\": 1,\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"Id\": 1,\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 1\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"Id\": 2,\r\n      \"StreetLine1\": \"Strada Plopilor nr 60\",\r\n      \"StreetLine2\": \"Ap 123123213\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopilor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Create"
+							]
+						},
+						"description": "Register new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Category",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 2\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"StreetLine1\": \"Strada Plopilor nr 61\",\r\n      \"StreetLine2\": \"Ap 1231232134\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopiloor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Update/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:55001/user/Delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Size",
+			"item": [
+				{
+					"name": "Get All Sizes",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Size",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 2\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"StreetLine1\": \"Strada Plopilor nr 61\",\r\n      \"StreetLine2\": \"Ap 1231232134\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopiloor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Update/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Id\": 1,\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"Id\": 1,\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 1\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"Id\": 2,\r\n      \"StreetLine1\": \"Strada Plopilor nr 60\",\r\n      \"StreetLine2\": \"Ap 123123213\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopilor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Create"
+							]
+						},
+						"description": "Register new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:55001/user/Delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Promotion",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Id\": 1,\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"Id\": 1,\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 1\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"Id\": 2,\r\n      \"StreetLine1\": \"Strada Plopilor nr 60\",\r\n      \"StreetLine2\": \"Ap 123123213\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopilor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Create"
+							]
+						},
+						"description": "Register new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Promotions",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Promotion",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"RoxanaPopeiu\",\r\n  \"Email\": \"roxanapopeiu@example.com\",\r\n  \"Role\": \"Admin\",\r\n  \"Password\": \"SecureP@ssword1\",\r\n  \"Addresses\": [\r\n    {\r\n      \"StreetLine1\": \"Strada Principala\",\r\n      \"StreetLine2\": \"nr 2\", \r\n      \"City\": \"Salciua\",\r\n      \"County\": \"Alba\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"10001\",\r\n      \"AdditionalDetails\": \"cea mai tare casa din Salciua\"\r\n    },\r\n    {\r\n      \"StreetLine1\": \"Strada Plopilor nr 61\",\r\n      \"StreetLine2\": \"Ap 1231232134\",\r\n      \"City\": \"Cluj-Napoca\",\r\n      \"County\": \"Cluj\",\r\n      \"Country\": \"Romania\",\r\n      \"PostalCode\": \"400472\",\r\n      \"AdditionalDetails\": \"cel mai tare bloc de pe plopiloor\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:55001/user/Update/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:55001/user/Delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "55001",
+							"path": [
+								"user",
+								"Delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

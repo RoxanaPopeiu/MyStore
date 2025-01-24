@@ -1,4 +1,5 @@
-﻿using MyStore.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+using MyStore.DTO;
 using MyStore.Mapping;
 using MyStore.Models;
 
@@ -16,8 +17,14 @@ namespace MyStore.Services
         { 
             if(CheckCategoryExistence(categoryDto.Name))
                 throw new Exception("The Category already exists!"); //to do Custom Exceptions
+             // Fetch the existing brand before mapping
+            var existingBrand = _context.Brands.FirstOrDefault(b => b.Id == categoryDto.BrandId || b.Name==categoryDto.BrandName);
+
+            if (existingBrand == null)
+                throw new Exception("Brand does not exist. Please create the brand first.");
             // Convert DTO to Entity
             var category =categoryDto.ToCategory();
+            category.Brand = existingBrand;
             var result=_context.Categories.Add(category);
             _context.SaveChanges();
             return result.Entity.ToCategoryDto();
@@ -25,52 +32,65 @@ namespace MyStore.Services
         }
         public List<CategoryDto> ReadAllCategory()
         {
-            var result=CategoryMapping.ToCategoryDtoList(_context.Categories);
+            var result = CategoryMapping.ToCategoryDtoList(
+                _context.Categories
+                    .Include(c => c.Brand)  
+                    .Include(c => c.Sizes)  
+            );
             return result;
 
         }
         public Category ReadOneCategoryById(int id)
         {
-            return _context.Categories.SingleOrDefault(x =>x.Id == id);
+            return _context.Categories
+                    .Include(c => c.Brand)  
+                    .Include(c => c.Sizes)  
+                    .SingleOrDefault(x => x.Id == id);
         }
         public CategoryDto Update(int id, CategoryDto categoryDto)
         {
-            if (CheckCategoryExistence(categoryDto.Name))
-                throw new Exception("The Category already exists!"); //to do Custom Exceptions
+
             var extCategory=ReadOneCategoryById(id);
-            if(extCategory != null)
-            {
-                extCategory.Name = categoryDto.Name;
-                extCategory.Description = categoryDto.Description;
-                extCategory.Brand= _context.Brands.FirstOrDefault(b => b.Name == categoryDto.BrandName);
-                // Update Sizes if provided
-                if (categoryDto.Sizes != null && categoryDto.Sizes.Any())
+            if (extCategory == null)
+                throw new Exception("Category not found.");
+            var existingBrand = _context.Brands.FirstOrDefault(b => b.Name == categoryDto.BrandName);
+            if (existingBrand == null)
+                throw new Exception("Brand does not exist. Please create the brand first.");
+
+            extCategory.BrandId = existingBrand.Id;
+            extCategory.Brand = existingBrand;
+
+            extCategory.Name = categoryDto.Name;
+            extCategory.Description = categoryDto.Description;
+             
+
+            if (categoryDto.Sizes != null && categoryDto.Sizes.Any())
                 {
                     foreach (var sizeDto in categoryDto.Sizes)
                     {
                         var existingSize = _context.Sizes.FirstOrDefault(s => s.Id == sizeDto.Id);
                         if (existingSize != null)
                         {
-                            // Update existing size
+
                             existingSize.Name = sizeDto.Name;
                             existingSize.Description = sizeDto.Description;
-                            existingSize.CategoryId = id; // Link the size to this category
+                            
                         }
                         else
                         {
-                            // Add new size
-                            var newSize = new Size
-                            {
-                                Name = sizeDto.Name,
-                                Description = sizeDto.Description,
-                                CategoryId = id
-                            };
-                            _context.Sizes.Add(newSize);
-                        }
+
+                        extCategory.Sizes.Add(new Size
+                        {
+                            Name = sizeDto.Name,
+                            Description = sizeDto.Description,
+                            CategoryId = id
+                        });
+
+                    }
                     }
                 }
-                _context.SaveChanges();
-            }
+
+            _context.SaveChanges();
             return extCategory.ToCategoryDto();
 
         }

@@ -14,7 +14,9 @@ namespace MyStore.Mapping
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
+                CategoryId=product.CategoryId,
                 CategoryName = product.Category?.Name,
+                BrandId=product.BrandId,
                 BrandName = product.Brand?.Name,
                 PromotionName = product.Promotion?.Value.ToString(),
                 Sizes = product.ProductSizes.Select(ps => ps.Size.ToSizeDto()).ToList()
@@ -25,21 +27,19 @@ namespace MyStore.Mapping
         {
             return products.Select(product => product.ToProductDto()).ToList();
         }
-        public static Product ToProduct(this ProductDto productDto, CategoryDto categoryDto, BrandDto brandDto, PromotionDto promotionDto)
+        public static Product ToProduct(this ProductDto productDto)
         {
             return new Product
             {
                 Name = productDto.Name,
                 Description = productDto.Description,
                 Price = productDto.Price,
-                Category=categoryDto.ToCategory(),
-                Brand=brandDto.ToBrand(),
-                Promotion=promotionDto.ToPromotion(),
+                BrandId=productDto.BrandId,
+                CategoryId=productDto.CategoryId,
+                PromotionId=productDto.PromotionId,
                 ProductSizes=productDto.Sizes.Select(sizeDto => new ProductSize
-                {
-                    // Map the necessary properties from SizeDto to ProductSize
-                    Size = sizeDto.ToSize(), // Assuming `ToSize()` maps SizeDto to Size
-                                             // Add other mappings if ProductSize has additional properties
+                {               
+                    Size = sizeDto.ToSize(), 
                 }).ToList()
             };
         }

@@ -12,6 +12,7 @@ builder.Services.AddScoped<BrandService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<SizeService>();
 builder.Services.AddScoped<PromotionService>();
+builder.Services.AddScoped<ProductService>();
 
 // Add services to the container.
 
