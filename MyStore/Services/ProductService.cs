@@ -78,11 +78,14 @@ namespace MyStore.Services
         }
         public List<ProductDto>ReadAllProducts()
         {
-            var result=ProductMapping.ToProductDtoList(
+            var result = ProductMapping.ToProductDtoList(
                 _context.Products
-                .Include(p=>p.Brand)
-                .Include(p => p.Category)
-                );
+                    .Include(p => p.Brand)
+                    .Include(p => p.Category)
+                    .Include(p => p.ProductSizes)
+                        .ThenInclude(ps => ps.Size) // ✅ Add this line!
+            );
+
             return result;
         }
         public Product ReadOneProduct(int id)
@@ -169,6 +172,7 @@ namespace MyStore.Services
             public ProductAlreadyExistsException(string message) : base(message) { }
         }
         #endregion
+
         #region Private Methods
         private void ValidateProduct(ProductDto productDto)
         {

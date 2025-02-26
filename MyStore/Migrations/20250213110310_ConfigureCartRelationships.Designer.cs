@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyStore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250213110310_ConfigureCartRelationships")]
+    partial class ConfigureCartRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,7 +126,7 @@ namespace MyStore.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("MyStore.Models.CartItem", b =>
@@ -143,10 +146,7 @@ namespace MyStore.Migrations
                     b.Property<double>("PriceAtTimeOfAddition")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ProductSizeId")
+                    b.Property<int>("ProductSizeId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
@@ -159,11 +159,9 @@ namespace MyStore.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductId");
-
                     b.HasIndex("ProductSizeId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("MyStore.Models.Category", b =>
@@ -403,19 +401,13 @@ namespace MyStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyStore.Models.Product", "Product")
+                    b.HasOne("MyStore.Models.ProductSize", "ProductSize")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductSizeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyStore.Models.ProductSize", "ProductSize")
-                        .WithMany()
-                        .HasForeignKey("ProductSizeId");
-
                     b.Navigation("Cart");
-
-                    b.Navigation("Product");
 
                     b.Navigation("ProductSize");
                 });

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyStore;
+using MyStore.Interfaces;
 using MyStore.Services;
 using System;
 
@@ -13,8 +14,13 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<SizeService>();
 builder.Services.AddScoped<PromotionService>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<ICartItemService, CartItemService>();
+builder.Services.AddScoped<ICartService, CartService>(); 
+
 
 // Add services to the container.
+var serviceProvider = builder.Services.BuildServiceProvider();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

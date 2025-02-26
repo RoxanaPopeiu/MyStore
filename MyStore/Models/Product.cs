@@ -5,6 +5,9 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price {  get; set; }
+        public int StockQuantity { get; set; }
+        public bool IsAvailable { get; set; }
+
         // Foreign Key for Category
         public int CategoryId { get; set; }
         public Category Category { get; set; }
