@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Services;
 
@@ -7,39 +8,34 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SizeController : ControllerBase
+    public class SizeController(ISizeService sizeService) : ControllerBase
     {
-        public SizeService sizeService { get; set; }
-        public SizeController(SizeService sizeService)
-        {
-            this.sizeService = sizeService;
-        }
-
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] SizeDto sizeDto)
+        public async Task<IActionResult> Create([FromBody] SizeDto sizeDto)
         {
-            var createSize = sizeService.Create(sizeDto);
+            var createSize = await sizeService.Create(sizeDto);
             return Ok(createSize);
         }
         [HttpGet("ReadAllSizes")]
-        public List<SizeDto> ReadAllSizes()
+        public async Task<List<SizeDto>> ReadAllSizes()
         {
-            return sizeService.ReadAllSizes();
+            return await sizeService.ReadAllSizes();
         }
         [HttpGet("ReadOneSize/{ID:int}")]
-        public SizeDto ReadOneSizeById(int ID)
+        public async Task<SizeDto> ReadOneSizeById(int ID)
         {
-            return sizeService.ReadOneSizeById(ID).ToSizeDto();
+            var size = await sizeService.ReadOneSizeById(ID);
+            return size.ToSizeDto();
         }
         [HttpPut("Update/{ID:int}")]
-        public SizeDto Update(int ID, [FromBody] SizeDto sizeDto)
+        public async Task<SizeDto> Update(int ID, [FromBody] SizeDto sizeDto)
         {
-            return sizeService.Update(ID, sizeDto);
+            return await sizeService.Update(ID, sizeDto);
         }
         [HttpDelete("Delete/{ID:int}")]
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
         {
-            return sizeService.Delete(ID);
+            return await sizeService.Delete(ID);
         }
     }
 }

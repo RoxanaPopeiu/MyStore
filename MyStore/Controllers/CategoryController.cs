@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Services;
 
@@ -7,38 +9,34 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CategoryController:ControllerBase
+    public class CategoryController(ICategoryService categoryServices) :ControllerBase
     {
-        public CategoryService categoryServices { get; set; }
-        public CategoryController(CategoryService categoryServices)
-        {
-            this.categoryServices = categoryServices;
-        }
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Create([FromBody] CategoryDto categoryDto)
         {
-            var createCategory=categoryServices.Create(categoryDto);
+            var createCategory=await categoryServices.Create(categoryDto);
             return Ok(createCategory);
         }
         [HttpGet("ReadAllCategories")]
-        public List<CategoryDto> ReadAllCategories()
+        public async Task<List<CategoryDto>> ReadAllCategories()
         {
-            return categoryServices.ReadAllCategory();
+            return await categoryServices.ReadAllCategory();
         }
         [HttpGet("ReadOneCategoryById/{ID:int}")]
-        public CategoryDto ReadOneCategoryById(int ID)
+        public async Task<CategoryDto> ReadOneCategoryById(int ID)
         {
-            return categoryServices.ReadOneCategoryById(ID).ToCategoryDto();
+            var category = await categoryServices.ReadOneCategoryById(ID);
+            return category?.ToCategoryDto();
         }
         [HttpPut("Update/{ID:int}")]
-        public CategoryDto Update(int ID, [FromBody] CategoryDto categoryDto)
+        public async Task<CategoryDto> Update(int ID, [FromBody] CategoryDto categoryDto)
         {
-            return categoryServices.Update(ID, categoryDto);
+            return await categoryServices.Update(ID, categoryDto);
         }
         [HttpDelete("Delete/{ID:int}")]
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
         {
-            return categoryServices.Delete(ID);
+            return await categoryServices.Delete(ID);
         }
     }
     

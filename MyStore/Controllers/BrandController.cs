@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Services;
 
@@ -7,38 +8,34 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BrandController:ControllerBase
+    public class BrandController(IBrandService brandService):ControllerBase
     {
-        public BrandService brandService { get; set; }
-        public BrandController(BrandService brandService)
-        {
-            this.brandService = brandService;
-        }
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] BrandDto brandDto)
+        public async Task<IActionResult> Create([FromBody] BrandDto brandDto)
         {
-            var createBrand = brandService.Create(brandDto);
+            var createBrand =await brandService.Create(brandDto);
             return Ok(createBrand);
         }
         [HttpGet("ReadAllBrands")]
-        public List<BrandDto> ReadAllBrands()
+        public async Task<List<BrandDto>> ReadAllBrands()
         {
-            return brandService.ReadAllBrands();
+            return await brandService.ReadAllBrands();
         }
         [HttpGet("ReadOneBrand/{ID:int}")]
-        public BrandDto ReadOneBrandById(int ID)
+        public async Task<BrandDto> ReadOneBrandById(int ID)
         {
-            return brandService.ReadOneBrandById(ID).ToBrandDto();
+            var brand = await brandService.ReadOneBrandById(ID); 
+            return brand.ToBrandDto(); 
         }
         [HttpPut("Update/{ID:int}")]
-        public BrandDto Update(int ID, [FromBody] BrandDto brandDto)
+        public async Task<BrandDto> Update(int ID, [FromBody] BrandDto brandDto)
         {
-            return brandService.Update(ID, brandDto);
+            return await brandService.Update(ID, brandDto);
         }
         [HttpDelete("Delete/{ID:int}")]
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
         {
-            return brandService.Delete(ID);
+            return await brandService.Delete(ID);
         }
 
 

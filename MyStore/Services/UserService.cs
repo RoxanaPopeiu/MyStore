@@ -1,84 +1,79 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyStore.Services
 {
-    public class UserService
+    public class UserService(ApplicationDbContext context): IUserService
     {
-        private readonly ApplicationDbContext _context;
-        public UserService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
         #region CRUD
-        public UserDto Create(UserDto userDto)
+        public async Task<UserDto> Create(UserDto userDto)
         {
 
-            if (IsEmailInUse(userDto.Email))
+            if (await IsEmailInUse(userDto.Email))
                 throw new Exception("The Email is already used!"); //to do Custom Exceptions
             var user = userDto.ToUser();
-            var result =_context.Users.Add(user);
-            _context.SaveChanges();
+            var result =await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
             return result.Entity.ToUserDto();
         }
-        //Read
-        public UserDto Login(LoginDto loginDto)
+        public async Task<UserDto> Login(LoginDto loginDto)
         {
-            if(!IsEmailInUse(loginDto.Email))
+            if(!await IsEmailInUse(loginDto.Email))
                 throw new Exception("Wrong credentials!"); //to do Custom Exceptions
-            var user=_context.Users
+            var user=await context.Users
                 .Include(us => us.Addresses)
-                .SingleOrDefault(u=>u.Email == loginDto.Email && u.Password==loginDto.Password);
+                .SingleOrDefaultAsync(u=>u.Email == loginDto.Email && u.Password==loginDto.Password);
             if (user == null)
                 throw new Exception("Wrong credentials!");
             return user.ToUserDto() ;
         }
-        public UserDto Update(int Id,UserDto userDto)
+        public async Task<UserDto> Update(int Id,UserDto userDto)
         {
-            var extUser = GetUserById(Id);
+            var extUser =await GetUserById(Id);
             if (extUser != null)
             {
                 extUser.UserName = userDto.UserName;
                 extUser.Addresses = userDto.Addresses.Select(a => a.ToAdress()).ToList();
                 extUser.Password = userDto.Password;
                 extUser.Role = userDto.Role;
-                _context.SaveChanges();
+                await context.SaveChangesAsync();
                 return extUser.ToUserDto();
             }
             throw new Exception("The User doesn't exist!");
 
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var extUser= GetUserById(id);
+            var extUser= await GetUserById(id);
             if(extUser != null)
             {
-                _context.Users.Remove(extUser);
-                _context.SaveChanges();
+                context.Users.Remove(extUser);
+                await context.SaveChangesAsync();
                 return true;
             }
             return false;
         }
 
-        public List<UserDto> ReadAllByRole(string role)
+        public async Task<List<UserDto>> ReadAllByRole(string role)
         {
-            var usersWithRole = _context.Users.Where(u => u.Role == role).ToList();
+            var usersWithRole = await context.Users.Where(u => u.Role == role).ToListAsync();
             return UserMapping.ToUserDtoList(usersWithRole);
         }
 
         #endregion
         #region Private Methods
-        private bool IsEmailInUse(string email)
+        private async Task<bool> IsEmailInUse(string email)
         {
-            var result=_context.Users.FirstOrDefault(x => x.Email == email);
-            return result != null;
+            return await context.Users.AnyAsync(x => x.Email == email);
+       
         }
-        private User GetUserById(int Id)
+        private async Task<User> GetUserById(int Id)
         {
-            return _context.Users.SingleOrDefault(x=>x.Id == Id);
+            return await context.Users.SingleOrDefaultAsync(x=>x.Id == Id);
         }
         #endregion
 

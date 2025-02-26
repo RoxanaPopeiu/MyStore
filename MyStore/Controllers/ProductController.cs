@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Services;
 
@@ -7,37 +8,35 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductController : ControllerBase
+    public class ProductController(IProductService productService) : ControllerBase
     {
-        public ProductService productService {  get; set; }
-        public ProductController (ProductService productService)
-        {
-            this.productService = productService;
-        }
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] ProductDto productDto)
+        public async Task<IActionResult> Create([FromBody] ProductDto productDto)
         {
-            return Ok(productService.Create(productDto));
+            var createdProduct = await productService.Create(productDto);
+            return Ok(createdProduct);
         }
+
         [HttpGet("GetAllProducts")]
-        public List<ProductDto> GetProducts()
+        public async Task<List<ProductDto>> GetProducts()
         {
-            return productService.ReadAllProducts();
+            return await productService.ReadAllProducts();
         }
         [HttpGet("GetOneProduct/{ID:int}")]
-        public ProductDto GetOneProduct(int ID)
+        public async Task<ProductDto> GetOneProduct(int ID)
         {
-            return productService.ReadOneProduct(ID).ToProductDto();
+            var product = await productService.ReadOneProduct(ID);
+            return product?.ToProductDto(); 
         }
         [HttpPut("Update/{ID:int}")]
-        public ProductDto Update(int ID, ProductDto productDto)
+        public async Task<ProductDto> Update(int ID, ProductDto productDto)
         {
-            return productService.Update(ID, productDto);
+            return await productService.Update(ID, productDto);
         }
         [HttpDelete("Delete/{ID:int}")]
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
         {
-            return productService.Delete(ID);
+            return await productService.Delete(ID);
         }
       
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Models;
 using MyStore.Services;
 
@@ -7,45 +8,36 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
-        public UserService userService { get; set; }
-        public UserController(UserService userService)
-        {
-            this.userService = userService;
-        }
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] UserDto userDto)
+        public async Task<IActionResult> Create([FromBody] UserDto userDto)
         {
-
-            var createUser = userService.Create(userDto);
+            var createUser = await userService.Create(userDto);
             return Ok(createUser);
         }
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-
-            var extUser = userService.Login(loginDto);
+            var extUser =await userService.Login(loginDto);
             return Ok(extUser);
         }
         [HttpPut("Update/{ID:int}")]
-        public UserDto UpdateProduct(int ID, [FromBody] UserDto userDto)
+        public async Task<UserDto> UpdateProduct(int ID, [FromBody] UserDto userDto)
         {
-            return userService.Update(ID, userDto);
-
+            return await userService.Update(ID, userDto);
         }
         [HttpDelete("Delete/{ID:int}")]
 
-        public bool DeleteProduct(int ID)
+        public async Task<bool> DeleteProduct(int ID)
         {
-            return userService.Delete(ID);
-
+            return await userService.Delete(ID);
         }
 
         [HttpGet("Read/{role}")]
-        public List<UserDto> ReadUsersByRole(string role)
+        public async Task<List<UserDto>> ReadUsersByRole(string role)
         {
-            return userService.ReadAllByRole(role);
+            return await userService.ReadAllByRole(role);
         }
     }
 }

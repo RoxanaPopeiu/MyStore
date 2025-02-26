@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using MyStore.DTO;
-using MyStore.Interfaces;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
 using System.Security.Cryptography.X509Certificates;
@@ -29,7 +29,6 @@ namespace MyStore.Services
             return cartDto;
 
         }
-
         public async Task<CartDto> AddToCart(int userId, int productId, int? productSizeId, int quantity)
         {
             //Retrive the user's cart or create a new one if it doesn't exist

@@ -1,7 +1,7 @@
 ﻿using MyStore.DTO;
 using MyStore.Models;
 
-namespace MyStore.Interfaces
+namespace MyStore.Interfaces.Services
 {
     public interface ICartItemService
     {
@@ -9,6 +9,6 @@ namespace MyStore.Interfaces
         Task<CartItemDto> AddCartItem(CartItemDto cartItemDto);
         Task<CartItemDto> UpdateCartItemQuantity(int cartItemId, int quantity);
         Task RemoveCartItem(int cartItemId);
-        
+
     }
 }

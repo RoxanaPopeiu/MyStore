@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.DTO;
-using MyStore.Interfaces;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
 

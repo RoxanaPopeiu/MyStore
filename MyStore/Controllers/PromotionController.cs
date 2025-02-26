@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
+using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Services;
 
@@ -7,38 +8,33 @@ namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PromotionController:ControllerBase
+    public class PromotionController(IPromotionService promotionService) :ControllerBase
     {
-        public PromotionService promotionService { get; set; }
-        public PromotionController(PromotionService promotionService)
-        {
-            this.promotionService= promotionService;
-        }
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] PromotionDto promotionDto)
+        public async Task<IActionResult> Create([FromBody] PromotionDto promotionDto)
         {
-            var createPromotion=promotionService.Create(promotionDto);
+            var createPromotion=await promotionService.Create(promotionDto);
             return Ok(createPromotion);
         }
         [HttpGet("GetAllPromotions")]
-        public List<PromotionDto> GetPromotionList()
+        public async Task<List<PromotionDto>> GetPromotionList()
         {
-            return promotionService.ReadAllPromotions();
+            return await promotionService.ReadAllPromotions();
         }
         [HttpGet("GetOnePromotion/{ID:int}")]
-        public PromotionDto GetOnePromotion(int ID)
+        public async Task<PromotionDto> GetOnePromotion(int ID)
         {
-            return promotionService.ReadOnePromotionById(ID);
+            return await promotionService.ReadOnePromotionById(ID);
         }
         [HttpPut("Update/{ID:int}")]
-        public PromotionDto Update(int ID, [FromBody] PromotionDto promotionDto)
+        public async Task<PromotionDto> Update(int ID, [FromBody] PromotionDto promotionDto)
         {
-            return promotionService.Update(ID, promotionDto);
+            return await promotionService.Update(ID, promotionDto);
         }
         [HttpDelete("Delete/{ID:int}")]
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
         {
-            return promotionService.Delete(ID);
+            return await promotionService.Delete(ID);
         }
 
 

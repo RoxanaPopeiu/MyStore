@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DTO;
-using MyStore.Interfaces;
+using MyStore.Interfaces.Services;
 using MyStore.Services;
 
 namespace MyStore.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CartItemController : ControllerBase
+    public class CartItemController(ICartItemService cartItemService) : ControllerBase
     {
-        public ICartItemService cartItemService { get; set; }
-        public CartItemController(ICartItemService cartItemService) 
-        {
-            this.cartItemService = cartItemService;
-        }
         [HttpPost("AddCartItem")]
         public Task<CartItemDto> AddCartItem([FromBody] CartItemDto cartItemDto)
         {
