@@ -26,7 +26,7 @@ namespace MyStore.Controllers
         public async Task<CategoryDto> ReadOneCategoryById(int ID)
         {
             var category = await categoryServices.ReadOneCategoryById(ID);
-            return category?.ToCategoryDto();
+            return category;
         }
         [HttpPut("Update/{ID:int}")]
         public async Task<CategoryDto> Update(int ID, [FromBody] CategoryDto categoryDto)

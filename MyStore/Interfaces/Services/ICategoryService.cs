@@ -9,7 +9,7 @@ namespace MyStore.Interfaces.Services
 
         public Task<CategoryDto> Create(CategoryDto categoryDto);
         public Task<List<CategoryDto>> ReadAllCategory();
-        public Task<Category> ReadOneCategoryById(int id);
+        public Task<CategoryDto> ReadOneCategoryById(int id);
         public Task<CategoryDto> Update(int id, CategoryDto categoryDto);
         public Task<bool> Delete(int id);
 

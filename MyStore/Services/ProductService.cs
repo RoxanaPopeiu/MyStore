@@ -1,26 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.DTO;
+using MyStore.Interfaces.Repositories;
 using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
+using MyStore.Repositories;
 using static MyStore.Services.PromotionService;
 
 namespace MyStore.Services
 {
-    public class ProductService(ApplicationDbContext context): IProductService
+    public class ProductService(IProductRepository productRepository,
+        ICategoryRepository categoryRepository,
+        IBrandRepository brandRepository,
+        IPromotionRepository promotionRepository,
+        ISizeRepository sizeRepository) : IProductService
     {
         #region CRUD
         public async Task<ProductDto> Create(ProductDto productDto)
         {
 
-            if(await CheckProductExistence(productDto))
+            if(await productRepository.GetByNameAsync(productDto.Name) != null)
                 throw new ProductAlreadyExistsException($"A product with the name '{productDto.Name}' already exists.");
+
             ValidateProduct(productDto);
 
             //Retrieve category,brand and promotion from DB
-            var existingCategory=await context.Categories.FirstOrDefaultAsync(c=>c.Id==productDto.CategoryId || c.Name==productDto.Name);
-            var existingBrand=await context.Brands.FirstOrDefaultAsync(b=>b.Id == productDto.BrandId || b.Name == productDto.BrandName);
-          
+            var existingCategory=await categoryRepository.GetByIdAsync(productDto.CategoryId);
+            var existingBrand=await brandRepository.GetByIdAsync(productDto.BrandId);
+
             // Ensure category and brand exist before proceeding
             if (existingCategory == null)
                 throw new Exception($"Category '{productDto.CategoryName}' does not exist. Please create it first.");
@@ -30,80 +37,50 @@ namespace MyStore.Services
 
             //Retrieve Promotion from DB
             var promotion = productDto.PromotionId != null
-                ? await context.Promotions.FirstOrDefaultAsync(p => p.Id == productDto.PromotionId)
+                ? await promotionRepository.GetByIdAsync(productDto.PromotionId.Value)
                 : null;
 
             //ConvertDto to Product(promotion can be null)
             var product = productDto.ToProduct();
             product.Brand = existingBrand;
             product.Category = existingCategory;
-            var existingSizes = await context.Sizes.Where(s => productDto.Sizes.Select(sz => sz.Name).Contains(s.Name)).ToListAsync();
+            var existingSizes = await sizeRepository.GetByNameAsync(productDto.Sizes.Select(sz => sz.Name));
             product.ProductSizes = productDto.Sizes.Select(sizeDto =>
             {
-  
                 var existingSize = existingSizes.FirstOrDefault(s => s.Name == sizeDto.Name);
-
-                if (existingSize != null)
-                {
-                   
-                    return new ProductSize
+                return new ProductSize
                     {
-                        Size = existingSize,
-                        Product = product
-                    };
-                }
-                else
-                {
-                    
-                    return new ProductSize
-                    {
-                        Size = new Size
+                        Size = existingSize ?? new Size
                         {
                             Name = sizeDto.Name,
                             Description = sizeDto.Description,
                             CategoryId = productDto.CategoryId
                         },
                         Product = product
-                    };
-                }
-            }).ToList();
-            var result=context.Products.Add(product);
-            await context.SaveChangesAsync();
-            return result.Entity.ToProductDto();
-
+                    }; 
+                 }).ToList();
+            var savedProduct = await productRepository.AddAsync(product);
+            return savedProduct.ToProductDto();
 
         }
         public async Task<List<ProductDto>> ReadAllProducts()
         {
-            var products = await context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Category)
-                .Include(p => p.ProductSizes)
-                    .ThenInclude(ps => ps.Size)
-                .ToListAsync(); 
-
-            return ProductMapping.ToProductDtoList(products);
+            var products = await productRepository.GetAllWithDetailsAsync();
+            return products.ToProductDtoList();
         }
-
         public async Task <Product> ReadOneProduct(int id)
         {
-            return await context.Products
-                   .Include(p => p.Brand)
-                   .Include(p => p.Category) 
-                   .SingleOrDefaultAsync(p => p.Id == id);
+            return await productRepository.GetByIdWithDetailsAsync(id);
         }
         public async Task<ProductDto> Update(int id, ProductDto productDto)
         {
             ValidateProduct(productDto);
-            if (await CheckProductExistence(productDto))
-                throw new ProductAlreadyExistsException($"A product with the name '{productDto.Name}' already exists.");
-            var existingProduct =await context.Products
-                .Include(p => p.Category)
-                .Include(p=>p.Brand)
-                .Include(p=>p.Promotion)
-                .Include(p => p.ProductSizes) 
-                .FirstOrDefaultAsync(p=>p.Id==id);
 
+            bool nameExists = await productRepository.ExistsByNameAsync(productDto.Name);
+            if (nameExists)
+                throw new ProductAlreadyExistsException($"A product with the name '{productDto.Name}' already exists.");
+
+            var existingProduct =await productRepository.GetByIdWithDetailsAsync(id);
             if (existingProduct == null)
                 throw new Exception("Product not found.");
 
@@ -113,30 +90,23 @@ namespace MyStore.Services
             existingProduct.Price = productDto.Price;
 
             //Update CAtegory and Brand (must exist)
-            var category=await context.Categories.FirstOrDefaultAsync(c => c.Id==productDto.CategoryId);
+            var category=await categoryRepository.GetByIdAsync(productDto.CategoryId);
             if (category == null)
                 throw new Exception("Invalid category.");
-            var brand = await context.Brands.FirstOrDefaultAsync(b => b.Id == productDto.BrandId);
+            var brand = await brandRepository.GetByIdAsync(productDto.BrandId);
             if (brand == null)
                 throw new Exception("Invalid brand.");
 
             existingProduct.Category = category;
             existingProduct.Brand = brand;
             // Update Promotion (optional)
-            if (productDto.PromotionId.HasValue)
-            {
-                var promotion =await  context.Promotions.FirstOrDefaultAsync(p => p.Id == productDto.PromotionId);
-                existingProduct.Promotion = promotion; // If not found, it will be set to null
-            }
-            else
-            {
-                existingProduct.Promotion = null; // Remove promotion if none is provided
-            }
+            existingProduct.Promotion=productDto.PromotionId.HasValue ? await promotionRepository.GetByIdAsync(productDto.PromotionId.Value) : null;
+
             // Update Sizes (Many-to-Many Relationship)
             if (productDto.Sizes != null && productDto.Sizes.Any())
             {
                 // Find existing sizes in the database
-                var selectedSizes =await context.Sizes.Where(s => productDto.Sizes.Select(sz => sz.Id).Contains(s.Id)).ToListAsync();
+                var selectedSizes =await sizeRepository.GetByNameAsync(productDto.Sizes.Select(sz => sz.Name));
 
                 // Clear existing ProductSizes and assign new ones
                 existingProduct.ProductSizes.Clear();
@@ -146,18 +116,17 @@ namespace MyStore.Services
                 }
             }
 
-            //Save changes to the DB
-            await context.SaveChangesAsync();
+            //Save changes
+            await productRepository.UpdateAsync(existingProduct);
             return existingProduct.ToProductDto();
 
         }
         public async Task<bool> Delete(int id)
         {
-            var extProduct=await ReadOneProduct(id);
+            var extProduct=await productRepository.GetByIdAsync(id);
             if (extProduct!=null)
             {
-                context.Products.Remove(extProduct);
-                await context.SaveChangesAsync();
+                await productRepository.DeleteAsync(extProduct);
                 return true;
             }
             return false;
@@ -172,28 +141,27 @@ namespace MyStore.Services
         #endregion
 
         #region Private Methods
-        private void ValidateProduct(ProductDto productDto)
-        {
+
+          private async Task ValidateProduct(ProductDto productDto)
+          {
             if (productDto == null)
                 throw new ArgumentNullException(nameof(productDto), "Product cannot be null.");
 
             if (productDto.Price <= 0)
                 throw new Exception("Price cannot be 0.");
 
-            var categoryExists = context.Categories.Any(c => c.Id == productDto.CategoryId || c.Name==productDto.CategoryName);
-            if (!categoryExists)
+            var categoryTask = categoryRepository.ExistsByIdOrNameAsync(productDto.CategoryId, productDto.CategoryName);
+            var brandTask = brandRepository.ExistsByIdOrNameAsync(productDto.BrandId, productDto.BrandName);
+
+            await Task.WhenAll(categoryTask, brandTask);
+
+            if (!categoryTask.Result)
                 throw new Exception("Category is required and must exist.");
 
-            var brandExists = context.Brands.Any(b => b.Id == productDto.BrandId || b.Name==productDto.BrandName);
-            if (!brandExists)
+            if (!brandTask.Result)
                 throw new Exception("Brand is required and must exist.");
-
-        }
-        private async Task<bool> CheckProductExistence(ProductDto productDto)
-        {
-            return await context.Products.AnyAsync(x => x.Name == productDto.Name);
-        }
-
+          }
+    
         #endregion
 
     }

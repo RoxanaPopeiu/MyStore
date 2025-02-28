@@ -25,7 +25,7 @@ namespace MyStore.Controllers
         public async Task<BrandDto> ReadOneBrandById(int ID)
         {
             var brand = await brandService.ReadOneBrandById(ID); 
-            return brand.ToBrandDto(); 
+            return brand; 
         }
         [HttpPut("Update/{ID:int}")]
         public async Task<BrandDto> Update(int ID, [FromBody] BrandDto brandDto)

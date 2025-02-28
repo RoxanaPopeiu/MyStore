@@ -12,7 +12,7 @@ namespace MyStore.Controllers
         [HttpPost("AddToCart/{userID:int}/{productId:int}/{productSizeId:int}/{quantity:int}")]
         public Task<CartDto> AddToCart(int userId, int productId, int? productSizeId, int quantity)
         {
-            return cartService.AddToCart(userId,productId, productSizeId, quantity);
+            return cartService.AddToCart(userId,productId, productSizeId ?? 0, quantity);
         }
         [HttpGet("GetCartByUserId/{ID:int}")]
         public Task<CartDto> GetCartByUserId(int ID)

@@ -1,35 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.DTO;
+using MyStore.Interfaces.Repositories;
 using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
 
 namespace MyStore.Services
 {
-    public class PromotionService(ApplicationDbContext context): IPromotionService
+    public class PromotionService(IPromotionRepository promotionRepository) : IPromotionService
     {
         #region CRUD
         public async Task<PromotionDto> Create(PromotionDto promotionDto)
         {
             ValidatePromotion(promotionDto);
-            if (await CheckPromotionExistence(promotionDto.StartDate, promotionDto.EndDate, promotionDto.Value))
+            if (await promotionRepository.CheckPromotionExistence(promotionDto.StartDate, promotionDto.EndDate, promotionDto.Value))
                 throw new PromotionAlreadyExistsException("The promotion already exists!");
 
             var promotion = promotionDto.ToPromotion();
-            var result = await context.Promotions.AddAsync(promotion);
-            await context.SaveChangesAsync();
-            return result.Entity.ToPromotionDto();
+            var result = await promotionRepository.AddAsync(promotion);
+            return result.ToPromotionDto();
         }
 
         public async Task<List<PromotionDto>> ReadAllPromotions()
         {
-            var promotions = await context.Promotions.ToListAsync();
-            return PromotionMapping.ToPromotionDtoList(promotions);
+            var promotions = await promotionRepository.GetAllAsync();
+            return promotions.ToPromotionDtoList();
         }
 
-        public async Task<PromotionDto> ReadOnePromotionById(int id)
+        public async Task<PromotionDto?> ReadOnePromotionById(int id)
         {
-            var promotion = await context.Promotions.FindAsync(id);
+            var promotion = await promotionRepository.GetByIdAsync(id);
             return promotion?.ToPromotionDto();
         }
 
@@ -37,27 +37,26 @@ namespace MyStore.Services
         {
             ValidatePromotion(promotionDto);
 
-            if (await CheckPromotionExistence(promotionDto.StartDate, promotionDto.EndDate, promotionDto.Value))
+            if (await promotionRepository.CheckPromotionExistence(promotionDto.StartDate, promotionDto.EndDate, promotionDto.Value))
                 throw new PromotionAlreadyExistsException("A promotion with the same details already exists!");
 
-            var extPromotion = await context.Promotions.FindAsync(id);
+            var extPromotion = await promotionRepository.GetByIdAsync(id);
             if (extPromotion == null)
                 throw new PromotionNotFoundException("The promotion doesn't exist!");
 
             extPromotion.StartDate = promotionDto.StartDate;
             extPromotion.EndDate = promotionDto.EndDate;
             extPromotion.Value = promotionDto.Value;
-            await context.SaveChangesAsync();
+            await promotionRepository.UpdateAsync(extPromotion);
             return extPromotion.ToPromotionDto();
         }
 
         public async Task<bool> Delete(int id)
         {
-            var extPromotion = await context.Promotions.FindAsync(id);
+            var extPromotion = await promotionRepository.GetByIdAsync(id);
             if (extPromotion == null)
                 return false;
-            context.Promotions.Remove(extPromotion);
-            await context.SaveChangesAsync();
+            await promotionRepository.DeleteAsync(extPromotion);
             return true;
         }
         #endregion
@@ -90,14 +89,6 @@ namespace MyStore.Services
 
             promotionDto.StartDate = DateTime.SpecifyKind(promotionDto.StartDate, DateTimeKind.Utc);
             promotionDto.EndDate = DateTime.SpecifyKind(promotionDto.EndDate, DateTimeKind.Utc);
-        }
-
-        private async Task<bool> CheckPromotionExistence(DateTime startDate, DateTime endDate, double value)
-        {
-            return await context.Promotions.AnyAsync(X =>
-                X.StartDate.Date == startDate.Date &&
-                X.EndDate.Date == endDate.Date &&
-                X.Value == value);
         }
         #endregion
 

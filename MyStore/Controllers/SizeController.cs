@@ -25,7 +25,7 @@ namespace MyStore.Controllers
         public async Task<SizeDto> ReadOneSizeById(int ID)
         {
             var size = await sizeService.ReadOneSizeById(ID);
-            return size.ToSizeDto();
+            return size;
         }
         [HttpPut("Update/{ID:int}")]
         public async Task<SizeDto> Update(int ID, [FromBody] SizeDto sizeDto)

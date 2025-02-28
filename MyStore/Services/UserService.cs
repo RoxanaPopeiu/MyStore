@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.DTO;
+using MyStore.Interfaces.Repositories;
 using MyStore.Interfaces.Services;
 using MyStore.Mapping;
 using MyStore.Models;
@@ -7,40 +8,37 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyStore.Services
 {
-    public class UserService(ApplicationDbContext context): IUserService
+    public class UserService(IUserRepository userRepository): IUserService
     {
         #region CRUD
         public async Task<UserDto> Create(UserDto userDto)
         {
 
-            if (await IsEmailInUse(userDto.Email))
-                throw new Exception("The Email is already used!"); //to do Custom Exceptions
+            if (await userRepository.IsEmailInUse(userDto.Email))
+                throw new Exception("The Email is already used!");
             var user = userDto.ToUser();
-            var result =await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-            return result.Entity.ToUserDto();
+            var result =await userRepository.AddAsync(user);     
+            return result.ToUserDto();
         }
         public async Task<UserDto> Login(LoginDto loginDto)
         {
-            if(!await IsEmailInUse(loginDto.Email))
-                throw new Exception("Wrong credentials!"); //to do Custom Exceptions
-            var user=await context.Users
-                .Include(us => us.Addresses)
-                .SingleOrDefaultAsync(u=>u.Email == loginDto.Email && u.Password==loginDto.Password);
+            if(!await userRepository.IsEmailInUse(loginDto.Email))
+                throw new Exception("Wrong credentials!");
+            var user = await userRepository.GetUserWithDetail(loginDto);
             if (user == null)
                 throw new Exception("Wrong credentials!");
-            return user.ToUserDto() ;
+            return user.ToUserDto();
         }
-        public async Task<UserDto> Update(int Id,UserDto userDto)
+        public async Task<UserDto> Update(int id,UserDto userDto)
         {
-            var extUser =await GetUserById(Id);
+            var extUser =await userRepository.GetByIdAsync(id);
             if (extUser != null)
             {
                 extUser.UserName = userDto.UserName;
                 extUser.Addresses = userDto.Addresses.Select(a => a.ToAdress()).ToList();
                 extUser.Password = userDto.Password;
                 extUser.Role = userDto.Role;
-                await context.SaveChangesAsync();
+                await userRepository.UpdateAsync(extUser);
                 return extUser.ToUserDto();
             }
             throw new Exception("The User doesn't exist!");
@@ -48,11 +46,10 @@ namespace MyStore.Services
         }
         public async Task<bool> Delete(int id)
         {
-            var extUser= await GetUserById(id);
-            if(extUser != null)
+            var extUser= await userRepository.GetByIdAsync(id);
+            if (extUser != null)
             {
-                context.Users.Remove(extUser);
-                await context.SaveChangesAsync();
+                await userRepository.DeleteAsync(extUser);
                 return true;
             }
             return false;
@@ -60,22 +57,12 @@ namespace MyStore.Services
 
         public async Task<List<UserDto>> ReadAllByRole(string role)
         {
-            var usersWithRole = await context.Users.Where(u => u.Role == role).ToListAsync();
-            return UserMapping.ToUserDtoList(usersWithRole);
+            var usersWithRole = await userRepository.ReadAllByRole(role);
+            return usersWithRole;
         }
 
         #endregion
-        #region Private Methods
-        private async Task<bool> IsEmailInUse(string email)
-        {
-            return await context.Users.AnyAsync(x => x.Email == email);
-       
-        }
-        private async Task<User> GetUserById(int Id)
-        {
-            return await context.Users.SingleOrDefaultAsync(x=>x.Id == Id);
-        }
-        #endregion
+
 
     }
 }
